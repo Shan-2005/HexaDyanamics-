@@ -40,7 +40,74 @@ const useReveal = (threshold = 0.15) => {
   return { ref, revealed };
 };
 
-/* Text reveal wrapper — Dialect-style clip-path animation */
+/* Text reveal wrapper — Scramble/pixelated decode animation */
+const SCRAMBLE_CHARS = '▓▒░█▄▀■□▪▫▬▐▌●◆◇◈⬡⬢⏣⎔';
+
+const ScrambleText = ({
+  children,
+  delay = 0,
+}: {
+  children: string;
+  delay?: number;
+}) => {
+  const { ref, revealed } = useReveal(0.1);
+  const [displayText, setDisplayText] = useState(children);
+  const frameRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!revealed) return;
+
+    const original = children;
+    const duration = 800; // ms
+    const startTime = performance.now() + delay * 1000;
+
+    const scramble = (time: number) => {
+      const elapsed = time - startTime;
+      if (elapsed < 0) {
+        frameRef.current = requestAnimationFrame(scramble);
+        return;
+      }
+
+      const progress = Math.min(elapsed / duration, 1);
+      const revealedCount = Math.floor(progress * original.length);
+
+      let result = '';
+      for (let i = 0; i < original.length; i++) {
+        if (original[i] === ' ') {
+          result += ' ';
+        } else if (i < revealedCount) {
+          result += original[i];
+        } else {
+          result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+        }
+      }
+      setDisplayText(result);
+
+      if (progress < 1) {
+        frameRef.current = requestAnimationFrame(scramble);
+      } else {
+        setDisplayText(original);
+      }
+    };
+
+    frameRef.current = requestAnimationFrame(scramble);
+    return () => cancelAnimationFrame(frameRef.current);
+  }, [revealed, children, delay]);
+
+  return (
+    <div
+      ref={ref}
+      className={`text-reveal ${revealed ? 'revealed' : ''}`}
+      style={{ '--reveal-delay': `${delay}s`, marginTop: '5vw', maxWidth: '95%', color: '#d2d2d2', fontSize: '1.8vw', fontWeight: 500, lineHeight: '150%', letterSpacing: '-0.04vw', wordBreak: 'break-word' } as React.CSSProperties}
+    >
+      <div className="line" style={{ animationDelay: `${delay}s` }}>
+        {displayText}
+      </div>
+    </div>
+  );
+};
+
+/* Original TextReveal for non-string children */
 const TextReveal = ({
   children,
   delay = 0,
@@ -533,7 +600,7 @@ const BodyIntro = () => (
             building FPV drones and undertake exciting projects related to
             drone technology.
           </p>
-          <p className="body-text" style={{ marginBottom: '2vw', color: 'rgba(210,210,210,0.6)' }}>
+          <p className="body-text" style={{ marginBottom: '2vw', color: 'rgba(210,210,210,0.8)' }}>
             With a strong focus on drone racing, we're proud winners of
             multiple races across India. Through workshops, competitions, and
             collaborative projects, we empower our members with the skills
@@ -558,35 +625,40 @@ const BodyIntro = () => (
           style={{
             position: 'relative',
             width: '46.875vw',
-            height: '46.875vw',
+            height: '26.37vw',
             overflow: 'hidden',
           }}
         >
-          <img
-            src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80"
-            alt="Drone in flight"
+          <video
+            src="/media/robofest.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
             style={{
-              width: '100%',
-              height: '100%',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: '180%',
+              height: '180%',
               objectFit: 'cover',
-              opacity: 0.6,
-              filter: 'grayscale(50%)',
-              transition: 'all 0.7s ease',
+              opacity: 0.85,
+              transform: 'translate(-50%, -50%) rotate(-90deg)',
+              transition: 'opacity 0.7s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.filter = 'grayscale(0%)';
-              e.currentTarget.style.opacity = '0.8';
+              e.currentTarget.style.opacity = '1';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.filter = 'grayscale(50%)';
-              e.currentTarget.style.opacity = '0.6';
+              e.currentTarget.style.opacity = '0.85';
             }}
           />
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(to top, #0a0a0a, transparent)',
+              background: 'linear-gradient(to top, rgba(10,10,10,0.3) 0%, transparent 20%)',
+              pointerEvents: 'none',
             }}
           />
         </div>
@@ -594,14 +666,9 @@ const BodyIntro = () => (
     </div>
 
     {/* Full-width statement text (Dialect pattern) */}
-    <TextReveal delay={0.1}>
-      <div className="body-text-large" style={{ marginTop: '3vw', maxWidth: '86.5vw', color: '#d2d2d2' }}>
-        Everything we build is driven by a passion for flight and a hunger
-        for pushing what's possible. From carbon fiber frames to
-        AI-powered autonomous systems — we engineer the future of aerial
-        technology.
-      </div>
-    </TextReveal>
+    <ScrambleText delay={0.1}>
+      {"Everything we build is driven by a passion for flight and a hunger for pushing what's possible. From carbon fiber frames to AI-powered autonomous systems — we engineer the future of aerial technology."}
+    </ScrambleText>
   </div>
 );
 
@@ -747,7 +814,7 @@ const StatsRow = () => (
             <div
               className="UI_1"
               style={{
-                color: 'rgba(210,210,210,0.3)',
+                color: 'rgba(210,210,210,0.55)',
                 marginTop: '0.5vw',
               }}
             >
@@ -808,10 +875,10 @@ const AchievementsSection = () => (
 
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4vw', marginTop: '1.5vw' }}>
       <ElementReveal>
-        <h4 style={{ color: 'rgba(210,210,210,0.5)' }}>ACHIEVEMENTS</h4>
+        <h4 style={{ color: 'rgba(210,210,210,0.7)' }}>ACHIEVEMENTS</h4>
       </ElementReveal>
       <ElementReveal delay={0.1}>
-        <p className="body-text" style={{ maxWidth: '22vw', color: 'rgba(210,210,210,0.4)' }}>
+        <p className="body-text" style={{ maxWidth: '22vw', color: 'rgba(210,210,210,0.7)' }}>
           Pushing the boundaries of aerial agility and technical excellence across national stages.
         </p>
       </ElementReveal>
@@ -853,7 +920,7 @@ const AchievementsSection = () => (
               </div>
               <div>
                 <div className="UI_1" style={{ color: '#00D1A0', marginBottom: '0.3vw' }}>{a.rank}</div>
-                <div className="UI_1" style={{ color: 'rgba(210,210,210,0.3)' }}>
+                <div className="UI_1" style={{ color: 'rgba(210,210,210,0.55)' }}>
                   <Calendar size={9} style={{ display: 'inline', marginRight: '0.3vw', verticalAlign: 'middle' }} />
                   {a.date}
                 </div>
@@ -863,11 +930,11 @@ const AchievementsSection = () => (
             {/* Center: Title + Event */}
             <div style={{ flexGrow: 1, paddingLeft: '2vw' }}>
               <h4 style={{ color: '#d2d2d2', marginBottom: '0.3vw', letterSpacing: '-0.03em' }}>{a.title}</h4>
-              <div className="UI_1" style={{ color: 'rgba(210,210,210,0.25)' }}>{a.event}</div>
+              <div className="UI_1" style={{ color: 'rgba(210,210,210,0.5)' }}>{a.event}</div>
             </div>
 
             {/* Right: Description */}
-            <div className="body-text" style={{ maxWidth: '20vw', color: 'rgba(210,210,210,0.35)', flexShrink: 0 }}>
+            <div className="body-text" style={{ maxWidth: '22vw', color: 'rgba(210,210,210,0.65)', flexShrink: 0 }}>
               {a.description}
             </div>
           </div>
@@ -996,10 +1063,120 @@ const Footer = () => (
   </footer>
 );
 
+/* ─────────────────── DRONE CURSOR ─────────────────── */
+const DroneCursor = () => {
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: -100, y: -100 });
+  const target = useRef({ x: -100, y: -100 });
+  const velocity = useRef({ x: 0, y: 0 });
+  const animId = useRef<number>(0);
+
+  useEffect(() => {
+    // Hide on mobile/touch devices
+    if ('ontouchstart' in window) return;
+
+    const onMouseMove = (e: MouseEvent) => {
+      target.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const tick = () => {
+      const ease = 0.12;
+      const prevX = pos.current.x;
+      const prevY = pos.current.y;
+
+      pos.current.x += (target.current.x - pos.current.x) * ease;
+      pos.current.y += (target.current.y - pos.current.y) * ease;
+
+      // Velocity for tilt effect
+      velocity.current.x = pos.current.x - prevX;
+      velocity.current.y = pos.current.y - prevY;
+
+      if (cursorRef.current) {
+        const tiltX = Math.max(-25, Math.min(25, velocity.current.x * 3)); // Bank left/right
+        const tiltY = Math.max(-15, Math.min(15, velocity.current.y * 2)); // Pitch forward/back
+        cursorRef.current.style.transform = `translate(${pos.current.x - 20}px, ${pos.current.y - 20}px) rotateY(${tiltX}deg) rotateX(${-tiltY}deg)`;
+      }
+
+      animId.current = requestAnimationFrame(tick);
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    animId.current = requestAnimationFrame(tick);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      cancelAnimationFrame(animId.current);
+    };
+  }, []);
+
+  // Don't render on touch devices
+  if (typeof window !== 'undefined' && 'ontouchstart' in window) return null;
+
+  return (
+    <div
+      ref={cursorRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '40px',
+        height: '40px',
+        pointerEvents: 'none',
+        zIndex: 99999,
+        perspective: '200px',
+        willChange: 'transform',
+      }}
+    >
+      <svg
+        viewBox="0 0 100 100"
+        width="40"
+        height="40"
+        style={{ filter: 'drop-shadow(0 4px 12px rgba(0,209,160,0.4))' }}
+      >
+        {/* Drone body */}
+        <rect x="38" y="38" width="24" height="24" rx="4" fill="#0a0a0a" stroke="#00D1A0" strokeWidth="2" />
+        {/* Center dot */}
+        <circle cx="50" cy="50" r="4" fill="#00D1A0" />
+
+        {/* Arms */}
+        <line x1="38" y1="38" x2="22" y2="22" stroke="#00D1A0" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="62" y1="38" x2="78" y2="22" stroke="#00D1A0" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="38" y1="62" x2="22" y2="78" stroke="#00D1A0" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="62" y1="62" x2="78" y2="78" stroke="#00D1A0" strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* Propellers — spinning */}
+        <g className="drone-prop" style={{ transformOrigin: '22px 22px' }}>
+          <ellipse cx="22" cy="22" rx="14" ry="4" fill="rgba(0,209,160,0.5)" />
+          <ellipse cx="22" cy="22" rx="4" ry="14" fill="rgba(0,209,160,0.5)" />
+        </g>
+        <g className="drone-prop" style={{ transformOrigin: '78px 22px' }}>
+          <ellipse cx="78" cy="22" rx="14" ry="4" fill="rgba(0,209,160,0.5)" />
+          <ellipse cx="78" cy="22" rx="4" ry="14" fill="rgba(0,209,160,0.5)" />
+        </g>
+        <g className="drone-prop" style={{ transformOrigin: '22px 78px' }}>
+          <ellipse cx="22" cy="78" rx="14" ry="4" fill="rgba(0,209,160,0.5)" />
+          <ellipse cx="22" cy="78" rx="4" ry="14" fill="rgba(0,209,160,0.5)" />
+        </g>
+        <g className="drone-prop" style={{ transformOrigin: '78px 78px' }}>
+          <ellipse cx="78" cy="78" rx="14" ry="4" fill="rgba(0,209,160,0.5)" />
+          <ellipse cx="78" cy="78" rx="4" ry="14" fill="rgba(0,209,160,0.5)" />
+        </g>
+
+        {/* Motor hubs */}
+        <circle cx="22" cy="22" r="3" fill="#00D1A0" />
+        <circle cx="78" cy="22" r="3" fill="#00D1A0" />
+        <circle cx="22" cy="78" r="3" fill="#00D1A0" />
+        <circle cx="78" cy="78" r="3" fill="#00D1A0" />
+      </svg>
+    </div>
+  );
+};
+
 /* ─────────────────── APP ─────────────────── */
 export default function App() {
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#d2d2d2', fontFamily: 'var(--font-sans)' }}>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#d2d2d2', fontFamily: 'var(--font-sans)', cursor: 'none' }}>
+      <DroneCursor />
       <Navbar />
       <HeroSection />
       <MarqueeStrip />
