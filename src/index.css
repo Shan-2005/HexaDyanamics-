@@ -1,0 +1,657 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap');
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+:root {
+  --color-primary: #d2d2d2;
+  --color-bg: #0a0a0a;
+  --color-accent: #00D1A0;
+  --color-text: #d2d2d2;
+  --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  --font-mono: "Geist Mono", "Courier New", monospace;
+  --font-size-base: 0.8292vw;
+  --line-height-base: 1.2;
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+@theme {
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-hexa-teal: #00D1A0;
+  --color-hexa-dark: #0a0a0a;
+  --color-hexa-text: #d2d2d2;
+  --color-hexa-muted: #666666;
+}
+
+/* ── Base Reset ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #0a0a0a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-x: none;
+}
+
+body {
+  margin: 0;
+  background: #0a0a0a;
+  color: #d2d2d2;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: -0.0292vw;
+  overscroll-behavior-x: none;
+}
+
+body.loaded {
+  overflow: auto;
+}
+
+::selection {
+  background: #00D1A0;
+  color: #0a0a0a;
+}
+
+/* ── Typography Scale (Dialect-matched) ── */
+h1 {
+  font-family: var(--font-sans);
+  font-size: 9.5833vw;
+  font-weight: 700;
+  line-height: 80%;
+  letter-spacing: -0.7667vw;
+  text-transform: uppercase;
+}
+
+h2 {
+  font-family: var(--font-sans);
+  font-size: 6.25vw;
+  font-weight: 700;
+  line-height: 88%;
+  letter-spacing: -0.5vw;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-family: var(--font-sans);
+  font-size: 2.5vw;
+  font-weight: 700;
+  line-height: 88%;
+  letter-spacing: -0.1vw;
+  text-transform: uppercase;
+}
+
+h4 {
+  font-family: var(--font-sans);
+  font-size: 1.0417vw;
+  font-weight: 700;
+  line-height: 88%;
+  letter-spacing: -0.0417vw;
+  text-transform: uppercase;
+}
+
+h5 {
+  font-family: var(--font-sans);
+  font-size: 0.7292vw;
+  font-weight: 700;
+  line-height: 104%;
+  letter-spacing: -0.0292vw;
+  text-transform: uppercase;
+}
+
+/* Dialect's mono UI label class */
+.UI_1 {
+  font-family: var(--font-mono);
+  font-size: 0.625vw;
+  font-weight: 600;
+  line-height: 120%;
+  letter-spacing: 0.0125vw;
+  text-transform: uppercase;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Marquee (preserved) ── */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 25s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ── Section Rhythm ── */
+.section-pad {
+  padding: 6.25vw 2.5vw;
+}
+
+/* ── Hero (Fixed parallax) ── */
+.hero-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  background: #0a0a0a;
+  color: #d2d2d2;
+  z-index: 0;
+}
+
+.hero-scroll-container {
+  position: relative;
+  height: min(250vh, 300vw);
+}
+
+.hero__title {
+  color: #d2d2d2;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 14.5vw;
+  font-weight: 700;
+  line-height: 81%;
+  letter-spacing: -0.077em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin-top: -0.6vw;
+  margin-bottom: 1.45vw;
+  display: block;
+}
+
+.hero__subtitle {
+  display: inline-block;
+  width: 20vw;
+  color: #d2d2d2;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 0.8333vw;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: -0.0333vw;
+}
+
+.hero__graphic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 0.2083vw;
+  height: 3.25vw;
+  width: 100%;
+}
+
+/* ── Body section (scrolls over hero) ── */
+.body-section {
+  position: relative;
+  background: #0a0a0a;
+  color: #d2d2d2;
+  z-index: 2;
+  padding: 6.4062vw 2.5vw;
+  border-bottom: 1px solid #d2d2d215;
+}
+
+/* ── Body text sizes (Dialect-matched) ── */
+.body-text-large {
+  font-family: var(--font-sans);
+  font-size: 2.0833vw;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: -0.0833vw;
+}
+
+.body-text {
+  font-family: var(--font-sans);
+  font-size: 0.8333vw;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: -0.0333vw;
+}
+
+/* ── Capabilities Section ── */
+.capabilities {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 7.7vw;
+}
+
+.capabilities__label {
+  font-family: var(--font-sans);
+  font-size: 1.0417vw;
+  font-weight: 700;
+  line-height: 88%;
+  letter-spacing: -0.0417vw;
+  text-transform: uppercase;
+  margin-left: 7.7vw;
+}
+
+.capabilities__list {
+  width: 46.875vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.capability-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.capability-item .label {
+  font-family: var(--font-sans);
+  font-size: 1.0417vw;
+  height: 1.2vw;
+  box-sizing: content-box;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: -0.0417vw;
+  flex-grow: 1;
+  padding-bottom: 1.6667vw;
+  padding-top: 1.6667vw;
+  border-bottom: 1px solid #d2d2d220;
+}
+
+.capability-item .number {
+  font-family: var(--font-mono);
+  font-size: 0.625vw;
+  height: 1.2vw;
+  box-sizing: content-box;
+  font-weight: 600;
+  line-height: 120%;
+  letter-spacing: 0.0125vw;
+  text-transform: uppercase;
+  padding-bottom: 1.6667vw;
+  padding-top: 1.6667vw;
+  border-bottom: 1px solid #d2d2d220;
+}
+
+/* ── Arrow Link ── */
+.arrow-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5vw;
+  font-family: var(--font-mono);
+  font-size: 0.625vw;
+  font-weight: 600;
+  line-height: 120%;
+  letter-spacing: 0.0125vw;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.arrow-link__label {
+  display: inline-block;
+  height: 0.75vw;
+  line-height: 0.75vw;
+  overflow-y: hidden;
+}
+
+.arrow-link__arrow {
+  position: relative;
+  display: block;
+  width: 1.3vw;
+  height: 0.4167vw;
+  border-radius: 0.2083vw;
+  overflow: hidden;
+  transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Cross Icons (decorative) ── */
+.cross-icon {
+  width: 1.25vw;
+  height: 1.25vw;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26' fill='none'%3E%3Cpath d='M12.9961 1V25' stroke='%2300D1A0' stroke-miterlimit='10' stroke-linecap='square'/%3E%3Cpath d='M25 12.9966H1' stroke='%2300D1A0' stroke-miterlimit='10' stroke-linecap='square'/%3E%3C/svg%3E");
+}
+
+/* ── Text Reveal Animation ── */
+@keyframes revealFromBottom {
+  0% {
+    clip-path: inset(-100% -100% 100% -100%);
+  }
+
+  99.9% {
+    clip-path: inset(0% 0% 0% 0%);
+  }
+
+  100% {
+    clip-path: none;
+  }
+}
+
+@keyframes scalePulse {
+  0% {
+    transform: translate3d(0, -0.5em, 0) scale(1.1);
+  }
+
+  100% {
+    transform: translateZ(0);
+  }
+}
+
+.text-reveal .line {
+  clip-path: inset(100% -100% -100% -100%);
+  transform: translate3d(0, -0.5em, 0) scale(1.1);
+  opacity: 0;
+  transition: opacity 0.25s ease-in;
+  white-space: nowrap;
+}
+
+.text-reveal.revealed .line {
+  opacity: 1;
+  animation: revealFromBottom 0.5s ease-in forwards, scalePulse 0.75s cubic-bezier(0.175, 0.885, 0.42, 1.275) forwards;
+}
+
+/* ── Element Reveal ── */
+.element-reveal-item {
+  clip-path: inset(100% -100% -100% -100%);
+  transform: translate3d(0, -0.5em, 0) scale(1.1);
+  opacity: 0;
+  transition: opacity 0.25s ease-in;
+}
+
+.element-reveal.revealed .element-reveal-item {
+  opacity: 1;
+  animation: revealFromBottom 0.5s ease-in forwards, scalePulse 0.75s cubic-bezier(0.175, 0.885, 0.42, 1.275) forwards;
+}
+
+/* ── Pop-in for icons ── */
+@keyframes pop-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Logo Rail ── */
+.logo-rail {
+  width: 100%;
+  height: 3.3333vw;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #d2d2d215;
+  border-top: 1px solid #d2d2d215;
+  background-color: transparent;
+}
+
+.logo-rail__scroll {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  will-change: transform;
+}
+
+/* ── Footer ── */
+.footer-section {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid #d2d2d215;
+}
+
+.footer-bottom-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 2.5vw;
+  padding-right: 2.5vw;
+  height: 1.6667vw;
+  font-size: 0.729vw;
+  border-top: 1px solid #d2d2d215;
+}
+
+/* ── Dashed Divider ── */
+.dash-border {
+  border-top: 1px dashed #d2d2d220;
+}
+
+/* ── Smooth image loads ── */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Responsive: Tablet (1280px) ── */
+@media (max-width: 1280px) {
+  body {
+    font-size: 1.0769vw;
+    line-height: 113%;
+  }
+
+  .UI_1 {
+    font-size: 0.95vw;
+    line-height: 125%;
+  }
+
+  h5 {
+    font-size: 1.07vw;
+  }
+
+  .hero__title {
+    font-size: 14.8vw;
+    letter-spacing: -0.073em;
+  }
+
+  .hero__subtitle {
+    width: 24.3854vw;
+    font-size: 1.07vw;
+  }
+
+  .capabilities__label {
+    font-size: 1.25vw;
+    margin-left: 9.5vw;
+  }
+
+  .capability-item .label {
+    font-size: 1.25vw;
+  }
+
+  .footer-bottom-bar {
+    height: 2.5vw;
+    font-size: 0.94vw;
+  }
+
+  .logo-rail {
+    height: 3.75vw;
+  }
+}
+
+/* ── Responsive: Mobile (768px) ── */
+@media (max-width: 768px) {
+  body {
+    font-size: 3.5533vw;
+    letter-spacing: -0.1421vw;
+  }
+
+  .UI_1 {
+    font-size: 3.0457vw;
+    font-weight: 600;
+    line-height: 120%;
+    letter-spacing: 0.0609vw;
+  }
+
+  h1 {
+    font-size: 10.1523vw;
+    line-height: 80%;
+    letter-spacing: -0.8122vw;
+  }
+
+  h2 {
+    font-size: 8.1218vw;
+    line-height: 88%;
+    letter-spacing: -0.6497vw;
+  }
+
+  h3 {
+    font-size: 6.0914vw;
+    letter-spacing: -0.4873vw;
+  }
+
+  h4 {
+    font-size: 4.0609vw;
+    letter-spacing: -0.1624vw;
+  }
+
+  h5 {
+    font-size: 3.5533vw;
+    letter-spacing: -0.1421vw;
+    margin-bottom: 4.0609vw;
+  }
+
+  .section-pad {
+    padding: 12vw 4vw;
+  }
+
+  .hero__title {
+    font-size: 12.1827vw;
+    line-height: 80%;
+    letter-spacing: -0.9746vw;
+    white-space: pre-wrap;
+    margin-top: 38.0711vw;
+    width: 100%;
+    max-width: 87.8173vw;
+  }
+
+  .hero__subtitle {
+    width: 72.8426vw;
+    margin: 5.0914vw auto 0;
+    font-size: 3.5533vw;
+    letter-spacing: -0.1421vw;
+  }
+
+  .hero__graphic {
+    gap: 2.0305vw;
+    height: 6.0914vw;
+  }
+
+  .body-section {
+    padding: 16.2437vw 4.0609vw;
+  }
+
+  .body-text-large {
+    font-size: 5.0761vw;
+    letter-spacing: -0.203vw;
+  }
+
+  .capabilities {
+    flex-direction: column;
+    gap: 10.1523vw;
+    margin-top: 0;
+  }
+
+  .capabilities__label {
+    font-size: 4.0609vw;
+    margin-left: 0;
+  }
+
+  .capabilities__list {
+    width: 100%;
+  }
+
+  .capability-item .label {
+    font-size: 4.0609vw;
+    letter-spacing: -0.1624vw;
+    height: 4vw;
+    padding-top: 7vw !important;
+    padding-bottom: 7vw !important;
+  }
+
+  .capability-item .number {
+    font-size: 3.0457vw;
+    letter-spacing: 0.0609vw;
+    height: 4vw;
+    padding-top: 7vw !important;
+    padding-bottom: 7vw !important;
+  }
+
+  .arrow-link {
+    gap: 2.2vw;
+    font-size: 3.0457vw;
+    letter-spacing: 0.0609vw;
+  }
+
+  .cross-icon {
+    width: 6.0914vw;
+    height: 6.0914vw;
+  }
+
+  .logo-rail {
+    height: 16.2437vw;
+  }
+
+  .footer-bottom-bar {
+    height: 6.0914vw;
+    font-size: 3.5533vw;
+  }
+}
+
+/* ── Spiral Card Hover Pop ── */
+.spiral-card {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.spiral-card:hover {
+  transform: scale(1.18) !important;
+  box-shadow: 0 12px 50px rgba(0, 209, 160, 0.25), 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+  border-color: rgba(0, 209, 160, 0.4) !important;
+  z-index: 100;
+}
+
+.spiral-card:hover img {
+  filter: grayscale(0%) brightness(1) !important;
+}

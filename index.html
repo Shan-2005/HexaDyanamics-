@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>HexaDynamics — Aerial Innovation at SRM</title>
+  <meta name="description"
+    content="HexaDynamics is SRM's premier drone club, specializing in FPV drones, drone racing, and aerial innovation." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="HexaDynamics — Aerial Innovation" />
+  <meta property="og:description"
+    content="The go-to drone club at SRM. FPV drones, racing, and innovative aerial projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
+
+    body.loaded {
+      overflow: auto;
+    }
+
+    /* ── Loader (Dialect-style) ── */
+    .site-loader {
+      position: fixed;
+      inset: 0;
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10001;
+      transition: opacity 0.25s ease-out;
+    }
+
+    .site-loader.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader__content {
+      color: #d2d2d2;
+      text-align: left;
+      position: relative;
+      font-family: "Geist", sans-serif;
+      font-size: 1.6667vw;
+      font-weight: 800;
+      line-height: 84%;
+      letter-spacing: -0.1vw;
+      text-transform: uppercase;
+    }
+
+    .loader__brand {
+      color: #00D1A0;
+      font-size: 5.2vw;
+      font-weight: 800;
+      line-height: 0.84;
+      letter-spacing: -0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.5vw;
+    }
+
+    .loader__graphic {
+      display: flex;
+      flex-direction: row;
+      gap: 0.2083vw;
+      align-items: center;
+      margin-bottom: 1vw;
+    }
+
+    .loader__graphic_icon {
+      display: inline-block;
+      width: 1.3021vw;
+      height: 1.3021vw;
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transform: scale(0);
+      animation: loader-pop-in 0.3s ease forwards;
+    }
+
+    .loader__graphic_icon.icon_1 {
+      animation-delay: 0.4s;
+    }
+
+    .loader__graphic_icon.icon_2 {
+      animation-delay: 0.3s;
+    }
+
+    .loader__graphic_icon.icon_3 {
+      animation-delay: 0.2s;
+    }
+
+    /* Simple colored squares as brand icons */
+    .loader__graphic_icon.icon_1 {
+      background: #00D1A0;
+      border-radius: 2px;
+    }
+
+    .loader__graphic_icon.icon_2 {
+      background: #d2d2d2;
+      border-radius: 2px;
+    }
+
+    .loader__graphic_icon.icon_3 {
+      background: #00D1A0;
+      border-radius: 50%;
+    }
+
+    @keyframes loader-pop-in {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .loader__pct {
+      display: inline-flex;
+      height: 0.625vw;
+      align-items: center;
+      color: #d2d2d2;
+      font-family: "Geist Mono", monospace;
+      font-size: 0.625vw;
+      font-weight: 600;
+      line-height: 120%;
+      letter-spacing: 0.0125vw;
+      text-transform: uppercase;
+      margin-bottom: 0.8vw;
+    }
+
+    .loader__bar {
+      position: fixed;
+      bottom: 1.3021vw;
+      left: 2.5vw;
+      right: 2.5vw;
+      height: 1px;
+      background: linear-gradient(to right,
+          #d2d2d2 0, #d2d2d2 0.2083vw,
+          transparent 0.2084vw, transparent 0.4167vw) repeat;
+      background-size: 0.4167vw 100%;
+    }
+
+    .loader__progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0%;
+      height: 1px;
+      background: #00D1A0;
+      transition: width 0.08s ease-out;
+    }
+
+    @media (max-width: 768px) {
+      .loader__brand {
+        font-size: 10vw;
+      }
+
+      .loader__pct {
+        font-size: 3vw;
+        height: 3.0457vw;
+      }
+
+      .site-loader {
+        display: block;
+        padding: 4.0609vw;
+      }
+
+      .loader__content {
+        font-size: 6.0914vw;
+        font-weight: 700;
+        line-height: 88%;
+        letter-spacing: -0.4873vw;
+      }
+
+      .loader__graphic_icon {
+        width: 6.3452vw;
+        height: 6.3452vw;
+      }
+
+      .loader__graphic {
+        gap: 1.0152vw;
+      }
+
+      .loader__bar {
+        position: relative;
+        margin-top: 8.1218vw;
+        left: 0;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        height: 1px;
+        background-size: 2.0305vw 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Loader (Dialect-style) -->
+  <div id="site-loader" class="site-loader">
+    <div class="loader__content">
+      <div class="loader__graphic">
+        <div class="loader__graphic_icon icon_1"></div>
+        <div class="loader__graphic_icon icon_2"></div>
+        <div class="loader__graphic_icon icon_3"></div>
+      </div>
+      <div class="loader__brand">HEXA<br />DYNAMICS</div>
+      <div class="loader__pct">[ LOADING ... <span id="loader-pct-val">0</span>% ]</div>
+      <div class="loader__bar">
+        <div id="loader-progress" class="loader__progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+
+  <script>
+    (function () {
+      var pct = 0;
+      var el = document.getElementById('loader-pct-val');
+      var bar = document.getElementById('loader-progress');
+      var loader = document.getElementById('site-loader');
+      var interval = setInterval(function () {
+        pct += Math.floor(Math.random() * 8) + 2;
+        if (pct > 100) pct = 100;
+        el.textContent = pct;
+        bar.style.width = pct + '%';
+        if (pct >= 100) {
+          clearInterval(interval);
+          setTimeout(function () {
+            loader.classList.add('hide');
+            document.body.classList.add('loaded');
+          }, 400);
+        }
+      }, 80);
+    })();
+  </script>
+</body>
+
+</html>
