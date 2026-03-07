@@ -182,32 +182,17 @@ const Navbar = () => {
       }}
     >
       {/* Logo */}
-      <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.4vw', textDecoration: 'none' }}>
-        <div
-          style={{
-            width: '1.4vw',
-            height: '1.4vw',
-            background: '#00D1A0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '2px',
-          }}
-        >
-          <span style={{ color: '#0a0a0a', fontWeight: 900, fontSize: '0.7vw', lineHeight: 1 }}>H</span>
-        </div>
-        <span
-          style={{
-            color: '#d2d2d2',
-            fontWeight: 800,
-            letterSpacing: '-0.06em',
-            textTransform: 'uppercase' as const,
-            fontSize: '0.9375vw',
-            fontFamily: 'var(--font-sans)',
-          }}
-        >
-          HEXA<span style={{ color: '#00D1A0' }}>DYNAMICS</span>
-        </span>
+      <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.8vw', textDecoration: 'none' }}>
+        <img
+          src="/hexagon.svg"
+          alt="Hexagon Logo"
+          style={{ width: '2vw', height: '2vw', objectFit: 'contain' }}
+        />
+        <img
+          src="/hexadynamics.svg"
+          alt="Hexadynamics Logo Text"
+          style={{ height: '1.4vw', objectFit: 'contain', marginTop: '0.1vw' }}
+        />
       </a>
 
       {/* Nav Links */}
@@ -291,7 +276,7 @@ const PhotoSpiral = () => {
   const targetRotY = useRef(0);
   const targetRotX = useRef(0);
   const animId = useRef<number>(0);
-  const [, forceRender] = useState(0);
+  const spiralContainerRef = useRef<HTMLDivElement>(null);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
@@ -373,7 +358,11 @@ const PhotoSpiral = () => {
       rotY.current += (targetRotY.current - rotY.current) * ease;
       rotX.current += (targetRotX.current - rotX.current) * ease;
       translateYRef.current += (targetTranslateY.current - translateYRef.current) * ease;
-      forceRender((v) => v + 1);
+      
+      if (spiralContainerRef.current) {
+        spiralContainerRef.current.style.transform = `translateY(${translateYRef.current}px) rotateX(${rotX.current}deg) rotateY(${rotY.current}deg)`;
+      }
+      
       animId.current = requestAnimationFrame(tick);
     };
     animId.current = requestAnimationFrame(tick);
@@ -395,12 +384,14 @@ const PhotoSpiral = () => {
       }}
     >
       <div
+        ref={spiralContainerRef}
         style={{
           position: 'relative',
           width: 0,
           height: 0,
           transformStyle: 'preserve-3d',
           transform: `translateY(${translateYRef.current}px) rotateX(${rotX.current}deg) rotateY(${rotY.current}deg)`,
+          willChange: 'transform',
         }}
       >
         {cards.map(({ src, angle, yOffset, radius, rowIdx, colIdx }, i) => (
@@ -456,23 +447,38 @@ const PhotoSpiral = () => {
   );
 };
 
-/* ─────────────────── HERO (Fixed, Dialect-style) ─────────────────── */
-const HeroSection = () => (
+const HeroSection = () => {
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Calculate percentage relative to window
+    const x = (e.clientX / window.innerWidth) * 100;
+    const y = (e.clientY / window.innerHeight) * 100;
+    setMousePos({ x, y });
+  };
+
+  return (
   <>
     {/* Fixed hero behind everything */}
-    <div className="hero-fixed" id="home">
-      {/* Ambient glow */}
+    <div 
+      className="hero-fixed" 
+      id="home"
+      onMouseMove={handleMouseMove}
+      style={{ overflow: 'hidden' }}
+    >
+      {/* Interactive Ambient Gradient */}
       <div
         style={{
           position: 'absolute',
-          top: '15%',
-          left: '25%',
-          width: '35%',
-          height: '35%',
-          background: 'rgba(0,209,160,0.04)',
-          filter: 'blur(140px)',
-          borderRadius: '50%',
+          inset: '-20%',
+          background: `
+            radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(0, 209, 160, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at ${100 - mousePos.x}% ${100 - mousePos.y}%, rgba(0, 150, 140, 0.1) 0%, transparent 50%)
+          `,
+          filter: 'blur(80px)',
           pointerEvents: 'none',
+          zIndex: 0,
+          transition: 'background 0.3s ease-out',
         }}
       />
 
@@ -495,31 +501,25 @@ const HeroSection = () => (
           pointerEvents: 'none',
         }}
       >
-        {/* Graphic icons */}
-        <div className="hero__graphic">
-          <div
+        {/* SVGs in Hero */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2vw' }}>
+          <img
+            src="/hexagon.svg"
+            alt="Hexagon Graphic"
             style={{
-              width: '1.3vw',
-              height: '1.3vw',
-              background: '#00D1A0',
-              borderRadius: '2px',
-              animation: 'pop-in 0.3s 2s ease both',
+              width: '18vw',
+              marginBottom: '1vw',
+              animation: 'pop-in 0.5s 2s ease both',
             }}
           />
-          <div
+          <img
+            src="/hexadynamics.svg"
+            alt="Hexadynamics Text Logo"
             style={{
-              width: '1.3vw',
-              height: '1.3vw',
-              background: '#d2d2d2',
-              borderRadius: '2px',
-              animation: 'pop-in 0.3s 2.2s ease both',
+              width: '50vw',
+              animation: 'pop-in 0.5s 2.2s ease both',
             }}
           />
-        </div>
-
-        {/* Title */}
-        <div className="hero__title">
-          HEXA<span style={{ color: '#00D1A0' }}>DYNAMICS</span>
         </div>
 
         {/* Subtitle */}
@@ -553,7 +553,8 @@ const HeroSection = () => (
     {/* Scroll container to enable parallax */}
     <div className="hero-scroll-container" />
   </>
-);
+  );
+};
 
 /* ─────────────────── BODY INTRO (Light-on-dark, Dialect-style) ─────────────────── */
 const BodyIntro = () => (
@@ -689,42 +690,59 @@ const CapabilitiesSection = () => (
       </h1>
     </TextReveal>
 
-    <div className="capabilities">
-      <ElementReveal>
-        <div className="capabilities__label">CAPABILITIES</div>
-      </ElementReveal>
+    <div className="capabilities" style={{ position: 'relative', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
-      <div className="capabilities__list">
-        {/* First item gets top border */}
-        {domains.map((d, i) => (
-          <ElementReveal key={d.title} delay={i * 0.08}>
-            <div
-              className="capability-item"
-              style={i === 0 ? {} : {}}
-            >
-              <div className="label" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
-                {d.title}
-              </div>
-              <div className="number" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
-                [ {d.tag} ]
-              </div>
-            </div>
-          </ElementReveal>
-        ))}
+      {/* Background Drone Graphic on the Left */}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vw' }}>
+        <img
+          src="/drone-svg.svg"
+          alt="Drone Graphic"
+          style={{
+            width: '35vw',
+            opacity: 0.6, // Increased opacity to make it brighter
+            filter: 'brightness(1.5) drop-shadow(0 0 15px rgba(0,209,160,0.5))', // Added filter to make it pop and glow slightly
+            pointerEvents: 'none',
+          }}
+        />
+      </div>
 
-        {/* Arrow link at bottom */}
-        <ElementReveal delay={0.6}>
-          <a
-            href="https://hexadynamics.vercel.app/Forms"
-            target="_blank"
-            rel="noreferrer"
-            className="arrow-link"
-            style={{ marginTop: '3vw', color: '#00D1A0' }}
-          >
-            <span className="arrow-link__label">Explore Our Work</span>
-            <span className="arrow-link__arrow" style={{ background: '#00D1A0', borderRadius: '4px' }} />
-          </a>
+      <div style={{ flex: 1 }}>
+        <ElementReveal>
+          <div className="capabilities__label">CAPABILITIES</div>
         </ElementReveal>
+
+        <div className="capabilities__list" style={{ position: 'relative', zIndex: 1 }}>
+          {/* First item gets top border */}
+          {domains.map((d, i) => (
+            <ElementReveal key={d.title} delay={i * 0.08}>
+              <div
+                className="capability-item"
+                style={i === 0 ? {} : {}}
+              >
+                <div className="label" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
+                  {d.title}
+                </div>
+                <div className="number" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
+                  [ {d.tag} ]
+                </div>
+              </div>
+            </ElementReveal>
+          ))}
+
+          {/* Arrow link at bottom */}
+          <ElementReveal delay={0.6}>
+            <a
+              href="https://hexadynamics.vercel.app/Forms"
+              target="_blank"
+              rel="noreferrer"
+              className="arrow-link"
+              style={{ marginTop: '3vw', color: '#00D1A0' }}
+            >
+              <span className="arrow-link__label">Explore Our Work</span>
+              <span className="arrow-link__arrow" style={{ background: '#00D1A0', borderRadius: '4px' }} />
+            </a>
+          </ElementReveal>
+        </div>
       </div>
     </div>
   </div>
