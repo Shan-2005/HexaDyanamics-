@@ -18,8 +18,12 @@ import {
   Navigation,
   Calendar,
   ArrowUpRight,
-  ChevronRight,
 } from 'lucide-react';
+
+// Vite SVG Imports
+import hexagonGraphic from './assets/hexagon.svg';
+import hexadynamicsText from './assets/hexadynamics.svg';
+import droneGraphic from './assets/drone-svg.svg';
 
 /* ─────────────────── INTERSECTION OBSERVER REVEAL ─────────────────── */
 const useReveal = (threshold = 0.15) => {
@@ -184,12 +188,12 @@ const Navbar = () => {
       {/* Logo */}
       <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.8vw', textDecoration: 'none' }}>
         <img
-          src="/hexagon.svg"
+          src={hexagonGraphic}
           alt="Hexagon Logo"
           style={{ width: '2vw', height: '2vw', objectFit: 'contain' }}
         />
         <img
-          src="/hexadynamics.svg"
+          src={hexadynamicsText}
           alt="Hexadynamics Logo Text"
           style={{ height: '1.4vw', objectFit: 'contain', marginTop: '0.1vw' }}
         />
@@ -502,9 +506,9 @@ const HeroSection = () => {
         }}
       >
         {/* SVGs in Hero */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2vw' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2vw', zIndex: 1 }}>
           <img
-            src="/hexagon.svg"
+            src={hexagonGraphic}
             alt="Hexagon Graphic"
             style={{
               width: '18vw',
@@ -513,7 +517,7 @@ const HeroSection = () => {
             }}
           />
           <img
-            src="/hexadynamics.svg"
+            src={hexadynamicsText}
             alt="Hexadynamics Text Logo"
             style={{
               width: '50vw',
@@ -695,7 +699,7 @@ const CapabilitiesSection = () => (
       {/* Background Drone Graphic on the Left */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vw' }}>
         <img
-          src="/drone-svg.svg"
+          src={droneGraphic}
           alt="Drone Graphic"
           style={{
             width: '35vw',
