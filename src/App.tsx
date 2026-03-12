@@ -10,6 +10,7 @@ import {
   Briefcase,
   Palette,
   Instagram,
+  Linkedin,
   ExternalLink,
   Trophy,
   Medal,
@@ -466,7 +467,6 @@ const HeroSection = () => {
     {/* Fixed hero behind everything */}
     <div 
       className="hero-fixed" 
-      id="home"
       onMouseMove={handleMouseMove}
       style={{ overflow: 'hidden' }}
     >
@@ -555,7 +555,7 @@ const HeroSection = () => {
     </div>
 
     {/* Scroll container to enable parallax */}
-    <div className="hero-scroll-container" />
+    <div className="hero-scroll-container" id="home" />
   </>
   );
 };
@@ -672,85 +672,170 @@ const BodyIntro = () => (
 
 /* ─────────────────── CAPABILITIES (Dialect-style list) ─────────────────── */
 const domains = [
-  { title: 'Drone Engineering', tag: '01', description: 'Custom carbon fiber frames, flight controllers, and FPV systems' },
-  { title: 'Autonomous Systems', tag: '02', description: 'Computer vision, GPS navigation, and AI-driven flight' },
-  { title: 'Racing & Competition', tag: '03', description: 'FPV drone racing across national and international stages' },
-  { title: 'Workshop & Training', tag: '04', description: 'Hands-on workshops for building, coding, and piloting drones' },
-  { title: 'Corporate & Sponsorship', tag: '05', description: 'Networking, funding, and event logistics for drone initiatives' },
-  { title: 'Creative & Media', tag: '06', description: 'Aerial photography, videography, and multimedia content' },
+  { 
+    title: 'Drone Engineering', 
+    tag: '01', 
+    description: 'We design and build custom-engineered FPV drones from the ground up. Our focus lies in structural optimization using high-grade carbon fiber, precision-tuned power systems for maximum agility, and custom-tailored flight controllers for extreme performance in racing and specialized missions.' 
+  },
+  { 
+    title: 'Autonomous Systems', 
+    tag: '02', 
+    description: 'Pioneering the next generation of flight through AI and automation. We develop vision-based obstacle avoidance systems, GPS-guided waypoint navigation, and autonomous landing protocols using Raspberry Pi, Pixhawk, and custom-trained neural networks for intelligent aerial operation.' 
+  },
+  { 
+    title: 'Racing & Competition', 
+    tag: '03', 
+    description: 'Competing at the highest levels of national drone racing. Our squad trains for pinpoint accuracy and lightning-fast reflexes, participating in IDRL and international leagues. We specialize in high-speed maneuvers, gate coordination, and low-latency digital FPV setups.' 
+  },
+  { 
+    title: 'Workshop & Training', 
+    tag: '04', 
+    description: 'Nurturing the future of drone tech through interactive learning. From beginner soldering sessions to advanced PID tuning workshops, we provide hands-on training that covers the entire drone lifecycle—CAD design, assembly, and expert piloting skills.' 
+  },
+  { 
+    title: 'Corporate & Sponsorship', 
+    tag: '05', 
+    description: 'Bridging technical expertise with professional logistics. We handle strategic networking, secure funding for major projects, and manage event logistics. Our domain connects the technical team with industry partners for collaborative innovation.' 
+  },
+  { 
+    title: 'Creative & Media', 
+    tag: '06', 
+    description: 'Capturing the world from new perspectives. We specialize in cinematic FPV videography, high-speed chase shots, and unique aerial perspectives for commercial and creative projects, pushing the limits of storytelling through experimental camera mounts.' 
+  },
 ];
 
-const CapabilitiesSection = () => (
-  <div className="body-section" id="domains" style={{ borderTop: '1px solid rgba(210,210,210,0.08)' }}>
-    <TextReveal>
-      <h1
-        style={{
-          color: '#d2d2d2',
-          marginBottom: '0.5vw',
-          marginLeft: '-0.4vw',
-        }}
-      >
-        WHAT WE <span style={{ color: '#00D1A0' }}>DO</span>
-      </h1>
-    </TextReveal>
+const CapabilitiesSection = () => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(0);
 
-    <div className="capabilities" style={{ position: 'relative', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-
-      {/* Background Drone Graphic on the Left */}
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vw' }}>
-        <img
-          src={droneGraphic}
-          alt="Drone Graphic"
+  return (
+    <div className="body-section" id="domains" style={{ borderTop: '1px solid rgba(210,210,210,0.08)' }}>
+      <TextReveal>
+        <h1
           style={{
-            width: '35vw',
-            opacity: 0.6, // Increased opacity to make it brighter
-            filter: 'brightness(1.5) drop-shadow(0 0 15px rgba(0,209,160,0.5))', // Added filter to make it pop and glow slightly
-            pointerEvents: 'none',
+            color: '#d2d2d2',
+            marginBottom: '0.5vw',
+            marginLeft: '-0.4vw',
           }}
-        />
-      </div>
+        >
+          WHAT WE <span style={{ color: '#00D1A0' }}>DO</span>
+        </h1>
+      </TextReveal>
 
-      <div style={{ flex: 1 }}>
-        <ElementReveal>
-          <div className="capabilities__label">CAPABILITIES</div>
-        </ElementReveal>
+      <div className="capabilities" style={{ position: 'relative', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
-        <div className="capabilities__list" style={{ position: 'relative', zIndex: 1 }}>
-          {/* First item gets top border */}
-          {domains.map((d, i) => (
-            <ElementReveal key={d.title} delay={i * 0.08}>
-              <div
-                className="capability-item"
-                style={i === 0 ? {} : {}}
+        {/* Left Side: Drone Graphic + Hovered Content Card */}
+        <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1vw' }}>
+          
+          {/* Detailed Description Card (Glassmorphism) */}
+          <div 
+            style={{ 
+              height: '14vw', 
+              width: '28vw', 
+              display: 'flex', 
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              textAlign: 'left',
+              marginBottom: '2vw',
+              padding: '2vw',
+              background: 'rgba(210, 210, 210, 0.03)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '8px',
+              border: '1px solid rgba(210, 210, 210, 0.08)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease, border-color 0.5s ease',
+              opacity: hoveredIndex !== null ? 1 : 0,
+              transform: hoveredIndex !== null ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
+              borderTopColor: hoveredIndex !== null ? '#00D1A0' : 'rgba(210, 210, 210, 0.08)',
+              borderTopWidth: '2px',
+            }}
+          >
+            {hoveredIndex !== null && (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '1vw' }}>
+                  <div className="UI_1" style={{ color: '#00D1A0', fontSize: '0.8vw' }}>
+                    [ {domains[hoveredIndex].tag} ]
+                  </div>
+                  <div className="UI_1" style={{ color: 'rgba(210,210,210,0.3)', fontSize: '0.7vw' }}>
+                    DETAILED OVERVIEW
+                  </div>
+                </div>
+                <h3 style={{ fontSize: '1.4vw', marginBottom: '1vw', color: '#d2d2d2', letterSpacing: '-0.02em' }}>
+                  {domains[hoveredIndex].title}
+                </h3>
+                <p 
+                  className="body-text" 
+                  style={{ 
+                    fontSize: '0.9vw', 
+                    lineHeight: '160%', 
+                    color: 'rgba(210,210,210,0.6)', 
+                    margin: 0,
+                    fontWeight: 400
+                  }}
+                >
+                  {domains[hoveredIndex].description}
+                </p>
+              </>
+            )}
+          </div>
+
+          <div style={{ position: 'relative', width: '35vw', height: '35vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <img
+              src={droneGraphic}
+              alt="Drone Graphic"
+              style={{
+                width: '100%',
+                opacity: 0.6,
+                filter: 'brightness(1.5) drop-shadow(0 0 15px rgba(0,209,160,0.5))',
+                pointerEvents: 'none',
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <div className="capabilities__list" style={{ position: 'relative', zIndex: 1 }}>
+            {domains.map((d, i) => (
+              <ElementReveal key={d.title} delay={i * 0.08}>
+                <div
+                  className="capability-item"
+                  style={{
+                    cursor: 'pointer',
+                    transition: 'color 0.3s ease',
+                    color: hoveredIndex === i ? '#00D1A0' : '#d2d2d2',
+                  }}
+                  onMouseEnter={() => setHoveredIndex(i)}
+                  onMouseLeave={() => setHoveredIndex(i)} // Keep the last hovered or reset? User said "when i hover", let's keep it on the last one or reset to first.
+                >
+                  <div className="label" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
+                    {d.title}
+                  </div>
+                  <div className="number" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
+                    [ {d.tag} ]
+                  </div>
+                </div>
+              </ElementReveal>
+            ))}
+
+            {/* Arrow link at bottom */}
+            <ElementReveal delay={0.6}>
+              <a
+                href="https://hexadynamics.vercel.app/Forms"
+                target="_blank"
+                rel="noreferrer"
+                className="arrow-link"
+                style={{ marginTop: '3vw', color: '#00D1A0' }}
               >
-                <div className="label" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
-                  {d.title}
-                </div>
-                <div className="number" style={i === 0 ? { borderTop: '1px solid rgba(210,210,210,0.12)' } : {}}>
-                  [ {d.tag} ]
-                </div>
-              </div>
+                <span className="arrow-link__label">Explore Our Work</span>
+                <span className="arrow-link__arrow" style={{ background: '#00D1A0', borderRadius: '4px' }} />
+              </a>
             </ElementReveal>
-          ))}
-
-          {/* Arrow link at bottom */}
-          <ElementReveal delay={0.6}>
-            <a
-              href="https://hexadynamics.vercel.app/Forms"
-              target="_blank"
-              rel="noreferrer"
-              className="arrow-link"
-              style={{ marginTop: '3vw', color: '#00D1A0' }}
-            >
-              <span className="arrow-link__label">Explore Our Work</span>
-              <span className="arrow-link__arrow" style={{ background: '#00D1A0', borderRadius: '4px' }} />
-            </a>
-          </ElementReveal>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 /* ─────────────────── MARQUEE ─────────────────── */
 const MarqueeStrip = () => {
@@ -808,7 +893,7 @@ const StatsRow = () => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
       {[
         { num: '15+', label: 'ACTIVE PROJECTS' },
-        { num: '50+', label: 'CORE MEMBERS' },
+        { num: '20', label: 'CORE MEMBERS' },
         { num: '6+', label: 'NATIONAL WINS' },
         { num: '3', label: 'DOMAINS' },
       ].map((s, i) => (
@@ -1021,35 +1106,35 @@ const Footer = () => (
         <h5 style={{ color: 'rgba(210,210,210,0.4)', marginBottom: '1.2vw' }}>EXTERNAL</h5>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8333vw' }}>
           <a
-            href="https://www.instagram.com/hexadynamics/"
+            href="https://www.instagram.com/hexadynamics.srmist?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
             target="_blank"
             rel="noreferrer"
             className="UI_1"
-            style={{ color: 'rgba(210,210,210,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4vw', color: 'rgba(210,210,210,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
             onMouseEnter={(e) => (e.currentTarget.style.color = '#00D1A0')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(210,210,210,0.4)')}
           >
-            Instagram
+            <Instagram size={14} /> Instagram
           </a>
           <a
-            href="https://www.instagram.com/hexadynamics_srmist/"
+            href="https://www.linkedin.com/company/hexadynamics/?originalSubdomain=in"
             target="_blank"
             rel="noreferrer"
             className="UI_1"
-            style={{ color: 'rgba(210,210,210,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4vw', color: 'rgba(210,210,210,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
             onMouseEnter={(e) => (e.currentTarget.style.color = '#00D1A0')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(210,210,210,0.4)')}
           >
-            Instagram SRMIST
+            <Linkedin size={14} /> LinkedIn
           </a>
           <a
-            href="mailto:contact@hexadynamics.com"
+            href="mailto:hexadynamics.srmist@gmail.com"
             className="UI_1"
             style={{ color: 'rgba(210,210,210,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
             onMouseEnter={(e) => (e.currentTarget.style.color = '#00D1A0')}
             onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(210,210,210,0.4)')}
           >
-            contact@hexadynamics.com
+            hexadynamics.srmist@gmail.com
           </a>
         </div>
       </div>
@@ -1095,7 +1180,7 @@ const DroneCursor = () => {
     };
 
     const tick = () => {
-      const ease = 0.12;
+      const ease = 0.4;
       const prevX = pos.current.x;
       const prevY = pos.current.y;
 

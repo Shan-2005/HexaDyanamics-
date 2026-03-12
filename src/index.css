@@ -252,6 +252,7 @@ video {
   z-index: 2;
   padding: 6.4062vw 2.5vw;
   border-bottom: 1px solid #d2d2d215;
+  scroll-margin-top: 4.5vw;
 }
 
 /* ── Body text sizes (Dialect-matched) ── */
