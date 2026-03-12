@@ -19,6 +19,11 @@ import {
   Navigation,
   Calendar,
   ArrowUpRight,
+  X,
+  ChevronRight,
+  ChevronLeft,
+  Send,
+  CheckCircle,
 } from 'lucide-react';
 
 // Vite SVG Imports
@@ -255,7 +260,7 @@ const ElementReveal = ({
 };
 
 /* ─────────────────── NAVBAR ─────────────────── */
-const Navbar = () => {
+const Navbar = ({ onJoinClick }: { onJoinClick: () => void }) => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -314,10 +319,8 @@ const Navbar = () => {
             {item}
           </a>
         ))}
-        <a
-          href="https://hexadynamics.vercel.app/Forms"
-          target="_blank"
-          rel="noreferrer"
+        <button
+          onClick={onJoinClick}
           className="UI_1"
           style={{
             display: 'flex',
@@ -328,14 +331,16 @@ const Navbar = () => {
             color: '#0a0a0a',
             fontWeight: 700,
             borderRadius: '2px',
+            border: 'none',
             textDecoration: 'none',
             transition: 'opacity 0.2s ease',
+            cursor: 'none',
           }}
           onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
           onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
         >
-          [ REGISTER ] <ArrowUpRight size={12} />
-        </a>
+          [ JOIN THE SQUAD ] <ArrowUpRight size={12} />
+        </button>
       </div>
     </nav>
   );
@@ -658,7 +663,7 @@ const HeroSection = () => {
 };
 
 /* ─────────────────── BODY INTRO (Light-on-dark, Dialect-style) ─────────────────── */
-const BodyIntro = () => (
+const BodyIntro = ({ onJoinClick }: { onJoinClick: () => void }) => (
   <div className="body-section" id="about">
     {/* Giant heading */}
     <TextReveal>
@@ -701,16 +706,14 @@ const BodyIntro = () => (
             collaborative projects, we empower our members with the skills
             needed to excel.
           </p>
-          <a
-            href="https://hexadynamics.vercel.app/Forms"
-            target="_blank"
-            rel="noreferrer"
+          <button
+            onClick={onJoinClick}
             className="arrow-link"
-            style={{ color: '#00D1A0' }}
+            style={{ color: '#00D1A0', background: 'none', border: 'none', padding: 0, textAlign: 'left', cursor: 'none' }}
           >
             <span className="arrow-link__label">Join the Squad</span>
             <span className="arrow-link__arrow" style={{ background: '#00D1A0', borderRadius: '4px' }} />
-          </a>
+          </button>
         </ElementReveal>
       </div>
 
@@ -1142,19 +1145,48 @@ const AchievementsSection = () => (
 );
 
 /* ─────────────────── FOOTER (Dialect-style) ─────────────────── */
-const Footer = () => (
+const Footer = ({ onJoinClick }: { onJoinClick: () => void }) => (
   <footer className="footer-section" style={{ zIndex: 2, position: 'relative', background: '#0a0a0a' }}>
     {/* Giant CTA heading */}
-    <div style={{ padding: '5.2vw 2.5vw 3vw' }}>
+    <div style={{ padding: '5.2vw 2.5vw 3vw', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
       <TextReveal>
         <h2 style={{ color: '#d2d2d2', marginBottom: '1vw' }}>
           READY TO <span style={{ color: '#00D1A0' }}>FLY?</span>
         </h2>
       </TextReveal>
       <ElementReveal delay={0.1}>
-        <h4 style={{ color: 'rgba(210,210,210,0.5)', marginBottom: '4vw' }}>
+        <h4 style={{ color: 'rgba(210,210,210,0.5)', marginBottom: '2vw' }}>
           JOIN SRM'S PREMIER DRONE CLUB
         </h4>
+      </ElementReveal>
+      <ElementReveal delay={0.2}>
+        <button
+          onClick={onJoinClick}
+          className="UI_1"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.6vw',
+            padding: '1vw 2.4vw',
+            background: '#00D1A0',
+            border: 'none',
+            color: '#0a0a0a',
+            fontSize: '1vw',
+            fontWeight: 700,
+            borderRadius: '2px',
+            transition: 'all 0.3s ease',
+            cursor: 'none',
+            marginTop: '1vw',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = '0.85';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = '1';
+          }}
+        >
+          JOIN THE SQUAD <ArrowUpRight size={16} />
+        </button>
       </ElementReveal>
     </div>
 
@@ -1369,20 +1401,251 @@ const DroneCursor = () => {
   );
 };
 
+/* ─────────────────── JOIN THE SQUAD MODAL ─────────────────── */
+const JoinModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const [step, setStep] = useState(1);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    regNo: '',
+    department: '',
+    year: '',
+    skills: '',
+    whyHexa: '',
+  });
+
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setStep(1);
+      setError('');
+      setIsClosing(false);
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 300);
+  };
+
+  if (!isOpen && !isClosing) return null;
+
+  const updateForm = (field: string, value: string) => {
+    setError('');
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const isStepValid = () => {
+    switch (step) {
+      case 1:
+        return formData.fullName.trim() !== '' && formData.email.trim() !== '' && formData.phone.trim() !== '';
+      case 2:
+        return formData.regNo.trim() !== '' && formData.department !== '' && formData.year !== '';
+      case 3:
+        return formData.skills.trim() !== '' && formData.whyHexa.trim() !== '';
+      default:
+        return true;
+    }
+  };
+
+  const nextStep = () => {
+    if (isStepValid()) {
+      setError('');
+      setStep((s) => Math.min(s + 1, 4));
+    } else {
+      setError('Please fill in all fields before proceeding.');
+    }
+  };
+
+  const prevStep = () => {
+    setError('');
+    setStep((s) => Math.max(s - 1, 1));
+  };
+
+  const handleSubmit = () => {
+    if (!isStepValid()) {
+      setError('Please complete all fields.');
+      return;
+    }
+    setError('');
+    const subject = `New Application: Join the Squad - ${formData.fullName}`;
+    const body = `
+JOIN THE SQUAD APPLICATION
+
+BASIC INFO
+Full Name: ${formData.fullName}
+Email: ${formData.email}
+Phone: ${formData.phone}
+
+ACADEMIC INFO
+Reg No: ${formData.regNo}
+Department: ${formData.department}
+Year: ${formData.year}
+
+INTERESTS & SKILLS
+Primary Skills: ${formData.skills}
+Why HexaDynamics: ${formData.whyHexa}
+
+---
+Sent via HexaDynamics Portal
+    `.trim();
+
+    const mailtoUrl = `mailto:hexadynamics.srmist@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
+    setStep(4); // Success step
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="modal-step">
+            <h4>Basic Information</h4>
+            <div className="form-group">
+              <label>Full Name</label>
+              <input type="text" placeholder="e.g., John Doe" value={formData.fullName} onChange={(e) => updateForm('fullName', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Email Address</label>
+              <input type="email" placeholder="name@email.com" value={formData.email} onChange={(e) => updateForm('email', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input type="tel" placeholder="+91 XXXXX XXXXX" value={formData.phone} onChange={(e) => updateForm('phone', e.target.value)} />
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div className="modal-step">
+            <h4>Academic Details</h4>
+            <div className="form-group">
+              <label>Registration Number</label>
+              <input type="text" placeholder="RA23XXXXXXXX" value={formData.regNo} onChange={(e) => updateForm('regNo', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Department</label>
+              <select value={formData.department} onChange={(e) => updateForm('department', e.target.value)}>
+                <option value="">Select Department</option>
+                <option value="CSE">Computer Science</option>
+                <option value="ECE">Electronics & Communication</option>
+                <option value="Mechanical">Mechanical Engineering</option>
+                <option value="Aero">Aerospace Engineering</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Year of Study</label>
+              <div className="year-grid">
+                {['1st', '2nd', '3rd', '4th'].map((y) => (
+                  <button key={y} className={`year-btn ${formData.year === y ? 'active' : ''}`} onClick={() => updateForm('year', y)}>
+                    {y} Year
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      case 3:
+        return (
+          <div className="modal-step">
+            <h4>Skills & Experience</h4>
+            <div className="form-group">
+              <label>Primary Skills</label>
+              <input type="text" placeholder="e.g., CAD, Python, Electronics" value={formData.skills} onChange={(e) => updateForm('skills', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Why do you want to join HexaDynamics?</label>
+              <textarea placeholder="Tell us about your passion..." value={formData.whyHexa} onChange={(e) => updateForm('whyHexa', e.target.value)} rows={4} />
+            </div>
+          </div>
+        );
+      case 4:
+        return (
+          <div className="modal-step success">
+            <CheckCircle size={64} color="#00D1A0" style={{ marginBottom: '1.5vw' }} />
+            <h4>Ready to Launch!</h4>
+            <p>Your details are ready. Clicking 'Send Email' will open your mail app to finalize the submission.</p>
+            <button className="submit-btn" onClick={handleClose}>CLOSE WINDOW</button>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className={`modal-overlay ${isClosing ? 'closing' : ''}`} onClick={handleClose}>
+      <div className={`modal-content ${isClosing ? 'closing' : ''}`} onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={handleClose}>
+          <X size={24} />
+        </button>
+
+        {/* Progress Bar */}
+        {step < 4 && (
+          <div className="progress-container">
+            {[1, 2, 3].map((s) => (
+              <div key={s} className={`progress-segment ${step >= s ? 'active' : ''}`} />
+            ))}
+          </div>
+        )}
+
+        <div className="modal-inner">
+          {renderStep()}
+
+          {step < 4 && (
+            <div className="modal-actions">
+              {step > 1 && (
+                <button className="back-btn" onClick={prevStep}>
+                  <ChevronLeft size={18} /> BACK
+                </button>
+              )}
+              
+              {error && <div className="modal-error">{error}</div>}
+
+              <div style={{ marginLeft: 'auto' }}>
+                {step < 3 ? (
+                  <button className="next-btn" onClick={nextStep}>
+                    NEXT <ChevronRight size={18} />
+                  </button>
+                ) : (
+                  <button className="submit-btn" onClick={handleSubmit}>
+                    SUBMIT & SEND MAIL <Send size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ─────────────────── APP ─────────────────── */
 export default function App() {
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#d2d2d2', fontFamily: 'var(--font-sans)', cursor: 'none' }}>
+      <JoinModal isOpen={isJoinModalOpen} onClose={() => setIsJoinModalOpen(false)} />
+      <WaveBackground />
       <DroneCursor />
-      <Navbar />
+      <Navbar onJoinClick={() => setIsJoinModalOpen(true)} />
       <HeroSection />
       <MarqueeStrip />
-      <BodyIntro />
+      <BodyIntro onJoinClick={() => setIsJoinModalOpen(true)} />
       <MarqueeStrip />
       <StatsRow />
       <CapabilitiesSection />
       <AchievementsSection />
-      <Footer />
+      <Footer onJoinClick={() => setIsJoinModalOpen(true)} />
     </div>
   );
 }

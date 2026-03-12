@@ -698,3 +698,216 @@ img {
 .spiral-card:hover img {
   filter: grayscale(0%) brightness(1) !important;
 }
+
+/* ── Join Modal Styles ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.modal-overlay.closing {
+  animation: fadeOut 0.3s ease-out forwards;
+  pointer-events: none;
+}
+
+.modal-content {
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 209, 160, 0.2);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  padding: 3vw;
+  position: relative;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+  transform: translateY(20px) scale(0.95);
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.modal-content.closing {
+  animation: slideOut 0.3s ease-out forwards;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5vw;
+  right: 1.5vw;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: #00D1A0;
+}
+
+.modal-inner h4 {
+  margin-bottom: 2vw;
+  color: #00D1A0;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5vw;
+}
+
+.form-group label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.8vw;
+  color: rgba(210, 210, 210, 0.5);
+  margin-bottom: 0.5vw;
+  text-transform: uppercase;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  background: rgba(210, 210, 210, 0.05);
+  border: 1px solid rgba(210, 210, 210, 0.1);
+  border-radius: 4px;
+  padding: 0.8vw 1vw;
+  color: #d2d2d2;
+  font-family: var(--font-sans);
+  font-size: 1vw;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #00D1A0;
+  background: rgba(0, 209, 160, 0.05);
+}
+
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8vw;
+}
+
+.year-btn {
+  background: rgba(210, 210, 210, 0.05);
+  border: 1px solid rgba(210, 210, 210, 0.1);
+  padding: 0.6vw;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-mono);
+  font-size: 0.8vw;
+}
+
+.year-btn.active {
+  background: rgba(0, 209, 160, 0.1);
+  border-color: #00D1A0;
+  color: #00D1A0;
+}
+
+/* Progress */
+.progress-container {
+  display: flex;
+  gap: 0.5vw;
+  margin-bottom: 2vw;
+}
+
+.progress-segment {
+  flex: 1;
+  height: 2px;
+  background: rgba(210, 210, 210, 0.1);
+  transition: background 0.3s;
+}
+
+.progress-segment.active {
+  background: #00D1A0;
+}
+
+/* Actions */
+.modal-actions {
+  display: flex;
+  margin-top: 3vw;
+  padding-top: 2vw;
+  border-top: 1px solid rgba(210, 210, 210, 0.1);
+}
+
+.next-btn, .submit-btn {
+  background: #00D1A0;
+  color: #0a0a0a;
+  border: none;
+  padding: 0.8vw 1.5vw;
+  font-weight: 700;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  font-family: var(--font-mono);
+  font-size: 0.9vw;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+  font-family: var(--font-mono);
+  font-size: 0.9vw;
+}
+
+.modal-step.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2vw 0;
+}
+
+.modal-step.success p {
+  color: rgba(210, 210, 210, 0.6);
+  font-size: 0.9vw;
+  margin-bottom: 2vw;
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes slideIn { from { transform: translateY(20px) scale(0.95); } to { transform: translateY(0) scale(1); } }
+@keyframes slideOut { from { transform: translateY(0) scale(1); } to { transform: translateY(20px) scale(0.95); } }
+
+/* Mobile Adaptations */
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 8vw;
+  }
+  .form-group label { font-size: 3vw; }
+  .form-group input, .form-group select, .form-group textarea { font-size: 3.5vw; padding: 3vw; }
+  .year-btn { font-size: 3vw; padding: 3vw; }
+  .next-btn, .submit-btn, .back-btn { font-size: 3.5vw; padding: 3vw 5vw; }
+  .modal-inner h4 { font-size: 5vw; margin-bottom: 6vw; }
+  .modal-step.success p { font-size: 3.5vw; }
+}
+
+.modal-error {
+  color: #ff4d4d;
+  font-family: var(--font-mono);
+  font-size: 0.8vw;
+  margin-left: 1vw;
+  display: flex;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
