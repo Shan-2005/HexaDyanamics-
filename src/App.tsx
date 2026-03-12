@@ -66,11 +66,18 @@ const WaveBackground = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // Multi-layered waves
+    // Multi-layered waves (10 layers for rich texture)
     const waves = [
-      { amplitude: 100, frequency: 0.005, speed: 0.02, offset: 0, opacity: 0.15 },
-      { amplitude: 120, frequency: 0.003, speed: 0.015, offset: 200, opacity: 0.1 },
-      { amplitude: 80, frequency: 0.007, speed: 0.025, offset: 400, opacity: 0.05 },
+      { amplitude: 100, frequency: 0.005, speed: 0.02, offset: 0, opacity: 0.2 },
+      { amplitude: 120, frequency: 0.003, speed: 0.015, offset: 200, opacity: 0.15 },
+      { amplitude: 80, frequency: 0.007, speed: 0.025, offset: 400, opacity: 0.1 },
+      { amplitude: 60, frequency: 0.009, speed: 0.03, offset: 600, opacity: 0.08 },
+      { amplitude: 140, frequency: 0.002, speed: 0.01, offset: 800, opacity: 0.12 },
+      { amplitude: 90, frequency: 0.004, speed: 0.018, offset: 1000, opacity: 0.1 },
+      { amplitude: 110, frequency: 0.006, speed: 0.022, offset: 1200, opacity: 0.07 },
+      { amplitude: 70, frequency: 0.008, speed: 0.028, offset: 1400, opacity: 0.05 },
+      { amplitude: 130, frequency: 0.0025, speed: 0.012, offset: 1600, opacity: 0.09 },
+      { amplitude: 85, frequency: 0.0045, speed: 0.016, offset: 1800, opacity: 0.11 },
     ];
 
     let time = 0;
@@ -127,8 +134,8 @@ const WaveBackground = () => {
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        zIndex: -1,
-        opacity: 0.4,
+        zIndex: 1, // Be above the basic background but below text (text sections are z-index 2+)
+        opacity: 0.6,
       }}
     />
   );
@@ -559,6 +566,7 @@ const HeroSection = () => {
       onMouseMove={handleMouseMove}
       style={{ overflow: 'hidden' }}
     >
+      <WaveBackground />
       {/* Interactive Ambient Gradient */}
       <div
         style={{
@@ -1365,7 +1373,6 @@ const DroneCursor = () => {
 export default function App() {
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#d2d2d2', fontFamily: 'var(--font-sans)', cursor: 'none' }}>
-      <WaveBackground />
       <DroneCursor />
       <Navbar />
       <HeroSection />
