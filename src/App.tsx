@@ -5,6 +5,7 @@
  */
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { SmoothScroll } from './components/SmoothScroll';
 import {
   Cpu,
   Briefcase,
